@@ -13,6 +13,10 @@
     padding: 30px;
   }
 
+  h1 {
+    margin-bottom: 40px;
+  }
+
   .row {
     background: #111;
     padding: 20px;
@@ -49,13 +53,25 @@
   }
 
   button {
-    height: 60px;
     width: 100%;
     border: none;
+    border-radius: 8px;
     font-weight: bold;
     cursor: pointer;
-    border-radius: 8px;
+  }
+
+  .main-btn {
+    height: 60px;
+    font-size: 15px;
     background: #1a1a1a;
+    color: white;
+  }
+
+  .reset-btn {
+    margin-top: 5px;
+    height: 30px;
+    font-size: 11px;
+    background: #550000;
     color: white;
   }
 
@@ -92,13 +108,12 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const appFirebase = initializeApp(firebaseConfig);
+  
 const db = getDatabase(appFirebase);
 
 const sound = new Audio("https://www.soundjay.com/buttons/sounds/beep-07.mp3");
 
 function formatTime(sec) {
-  if (sec <= 0) return "STOI";
   let m = Math.floor(sec / 60);
   let s = sec % 60;
   return `${m}:${s.toString().padStart(2, '0')}`;
@@ -130,10 +145,14 @@ for (let i = 0; i < 3; i++) {
     label.innerText = "CH " + (j+1);
 
     const btn = document.createElement("button");
-    btn.className = "empty";
+    btn.className = "main-btn empty";
     btn.innerText = "EMPTY";
 
-    // 🔥 CLICK = zapis do Firebase
+    const resetBtn = document.createElement("button");
+    resetBtn.className = "reset-btn";
+    resetBtn.innerText = "RESET";
+
+    // 🔥 START TIMER
     btn.onclick = () => {
       let minutes = parseFloat(input.value);
       if (!minutes) return;
@@ -145,34 +164,46 @@ for (let i = 0; i < 3; i++) {
       });
     };
 
-    // 🔥 NASŁUCH LIVE
+    // 🔥 RESET
+    resetBtn.onclick = () => {
+      set(ref(db, 'timers/' + id), null);
+    };
+
+    let interval = null;
+
+    // 🔥 LIVE SYNC
     onValue(ref(db, 'timers/' + id), (snapshot) => {
       const data = snapshot.val();
 
+      if (interval) clearInterval(interval);
+
       if (!data) {
         btn.innerText = "EMPTY";
-        btn.className = "empty";
+        btn.className = "main-btn empty";
         return;
       }
 
-      const interval = setInterval(() => {
+      interval = setInterval(() => {
         const remaining = Math.floor((data.end - Date.now()) / 1000);
 
         if (remaining <= 0) {
           btn.innerText = "STOI";
-          btn.className = "ready";
+          btn.className = "main-btn ready";
+
           sound.currentTime = 0;
           sound.play();
+
           clearInterval(interval);
         } else {
           btn.innerText = formatTime(remaining);
-          btn.className = "cooldown";
+          btn.className = "main-btn cooldown";
         }
       }, 1000);
     });
 
     box.appendChild(label);
     box.appendChild(btn);
+    box.appendChild(resetBtn);
     channels.appendChild(box);
   }
 
@@ -180,10 +211,6 @@ for (let i = 0; i < 3; i++) {
   row.appendChild(channels);
   app.appendChild(row);
 }
-</script>
-
-</body>
-</html>
 </script>
 
 </body>
