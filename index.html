@@ -6,58 +6,92 @@
 
 <style>
   body {
-    background: #000;
+    background: #0a0a0a;
     color: #fff;
-    font-family: Arial;
+    font-family: 'Segoe UI', Arial;
     text-align: center;
+    margin: 0;
+    padding: 30px;
   }
 
   h1 {
-    margin-bottom: 30px;
+    margin-bottom: 40px;
+    letter-spacing: 2px;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: auto;
   }
 
   .row {
+    background: #111;
+    padding: 20px;
+    border-radius: 12px;
     margin-bottom: 25px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.6);
   }
 
   input {
-    background: #111;
-    border: 1px solid #444;
+    background: #000;
+    border: 1px solid #333;
     color: white;
-    padding: 8px;
-    margin-bottom: 10px;
-    width: 150px;
+    padding: 10px;
+    width: 160px;
     text-align: center;
-  }
-
-  .channels {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-  }
-
-  button {
-    width: 100px;
-    height: 55px;
-    border: none;
-    font-weight: bold;
-    cursor: pointer;
-    background: #111;
-    color: white;
+    margin-bottom: 15px;
+    border-radius: 6px;
     font-size: 14px;
   }
 
+  .channels {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+  }
+
+  .channel-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .label {
+    font-size: 12px;
+    margin-bottom: 5px;
+    color: #888;
+  }
+
+  button {
+    width: 100%;
+    height: 60px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 8px;
+    background: #1a1a1a;
+    color: white;
+    transition: 0.2s;
+    font-size: 15px;
+  }
+
+  button:hover {
+    transform: scale(1.05);
+  }
+
   .empty {
-    background: #111;
+    background: #1a1a1a;
+    color: #aaa;
   }
 
   .cooldown {
-    background: red;
+    background: #8b0000;
   }
 
   .ready {
-    background: green;
+    background: #0f7a0f;
   }
+
 </style>
 </head>
 
@@ -65,7 +99,7 @@
 
 <h1>RESP TIMER</h1>
 
-<div id="app"></div>
+<div class="container" id="app"></div>
 
 <script>
 const rows = 3;
@@ -73,7 +107,6 @@ const channelsPerRow = 5;
 
 const app = document.getElementById("app");
 
-// 🔔 dźwięk (możesz podmienić link jak chcesz lepszy)
 const sound = new Audio("https://www.soundjay.com/buttons/sounds/beep-07.mp3");
 
 function formatTime(sec) {
@@ -88,13 +121,20 @@ for (let i = 0; i < rows; i++) {
   rowDiv.className = "row";
 
   const input = document.createElement("input");
-  input.placeholder = "czas (sekundy)";
+  input.placeholder = "czas (minuty)";
   input.type = "number";
 
   const channelsDiv = document.createElement("div");
   channelsDiv.className = "channels";
 
   for (let j = 0; j < channelsPerRow; j++) {
+
+    const box = document.createElement("div");
+    box.className = "channel-box";
+
+    const label = document.createElement("div");
+    label.className = "label";
+    label.innerText = "CH " + (j+1);
 
     const btn = document.createElement("button");
     btn.innerText = "EMPTY";
@@ -103,12 +143,12 @@ for (let i = 0; i < rows; i++) {
     let interval = null;
 
     btn.onclick = () => {
-      let time = parseInt(input.value);
-      if (!time) return;
+      let minutes = parseFloat(input.value);
+      if (!minutes) return;
 
       if (interval) clearInterval(interval);
 
-      let remaining = time;
+      let remaining = Math.floor(minutes * 60);
 
       btn.className = "cooldown";
       btn.innerText = formatTime(remaining);
@@ -131,7 +171,9 @@ for (let i = 0; i < rows; i++) {
       }, 1000);
     };
 
-    channelsDiv.appendChild(btn);
+    box.appendChild(label);
+    box.appendChild(btn);
+    channelsDiv.appendChild(box);
   }
 
   rowDiv.appendChild(input);
@@ -139,6 +181,9 @@ for (let i = 0; i < rows; i++) {
   app.appendChild(rowDiv);
 }
 </script>
+
+</body>
+</html>
 
 </body>
 </html>
