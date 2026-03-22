@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>Resp Timer</title>
+
+<style>
+  body {
+    background: #000;
+    color: #fff;
+    font-family: Arial;
+    text-align: center;
+  }
+
+  h1 {
+    margin-bottom: 30px;
+  }
+
+  .row {
+    margin-bottom: 25px;
+  }
+
+  input {
+    background: #111;
+    border: 1px solid #444;
+    color: white;
+    padding: 8px;
+    margin-bottom: 10px;
+    width: 150px;
+    text-align: center;
+  }
+
+  .channels {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  button {
+    width: 90px;
+    height: 50px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    background: #111;
+    color: white;
+  }
+
+  .empty {
+    background: #111;
+    color: white;
+  }
+
+  .cooldown {
+    background: red;
+    color: white;
+  }
+
+  .ready {
+    background: green;
+    color: white;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>RESP TIMER</h1>
+
+<div id="app"></div>
+
+<script>
+const rows = 3;
+const channelsPerRow = 5;
+
+const app = document.getElementById("app");
+
+for (let i = 0; i < rows; i++) {
+
+  const rowDiv = document.createElement("div");
+  rowDiv.className = "row";
+
+  const input = document.createElement("input");
+  input.placeholder = "czas (sekundy)";
+  input.type = "number";
+
+  const channelsDiv = document.createElement("div");
+  channelsDiv.className = "channels";
+
+  for (let j = 0; j < channelsPerRow; j++) {
+
+    const btn = document.createElement("button");
+    btn.innerText = "EMPTY";
+    btn.className = "empty";
+
+    let interval = null;
+
+    btn.onclick = () => {
+      let time = parseInt(input.value);
+      if (!time) return;
+
+      if (interval) clearInterval(interval);
+
+      let remaining = time;
+
+      btn.className = "cooldown";
+      btn.innerText = remaining + "s";
+
+      interval = setInterval(() => {
+        remaining--;
+
+        btn.innerText = remaining + "s";
+
+        if (remaining <= 0) {
+          clearInterval(interval);
+          interval = null;
+
+          btn.innerText = "STOI";
+          btn.className = "ready";
+        }
+      }, 1000);
+    };
+
+    channelsDiv.appendChild(btn);
+  }
+
+  rowDiv.appendChild(input);
+  rowDiv.appendChild(channelsDiv);
+  app.appendChild(rowDiv);
+}
+</script>
+
+</body>
+</html>
