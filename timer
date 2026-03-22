@@ -37,28 +37,26 @@
   }
 
   button {
-    width: 90px;
-    height: 50px;
+    width: 100px;
+    height: 55px;
     border: none;
     font-weight: bold;
     cursor: pointer;
     background: #111;
     color: white;
+    font-size: 14px;
   }
 
   .empty {
     background: #111;
-    color: white;
   }
 
   .cooldown {
     background: red;
-    color: white;
   }
 
   .ready {
     background: green;
-    color: white;
   }
 </style>
 </head>
@@ -74,6 +72,15 @@ const rows = 3;
 const channelsPerRow = 5;
 
 const app = document.getElementById("app");
+
+// 🔔 dźwięk (możesz podmienić link jak chcesz lepszy)
+const sound = new Audio("https://www.soundjay.com/buttons/sounds/beep-07.mp3");
+
+function formatTime(sec) {
+  let m = Math.floor(sec / 60);
+  let s = sec % 60;
+  return `${m}:${s.toString().padStart(2, '0')}`;
+}
 
 for (let i = 0; i < rows; i++) {
 
@@ -104,12 +111,12 @@ for (let i = 0; i < rows; i++) {
       let remaining = time;
 
       btn.className = "cooldown";
-      btn.innerText = remaining + "s";
+      btn.innerText = formatTime(remaining);
 
       interval = setInterval(() => {
         remaining--;
 
-        btn.innerText = remaining + "s";
+        btn.innerText = formatTime(remaining);
 
         if (remaining <= 0) {
           clearInterval(interval);
@@ -117,6 +124,9 @@ for (let i = 0; i < rows; i++) {
 
           btn.innerText = "STOI";
           btn.className = "ready";
+
+          sound.currentTime = 0;
+          sound.play();
         }
       }, 1000);
     };
