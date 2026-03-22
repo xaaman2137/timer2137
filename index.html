@@ -13,9 +13,7 @@
     padding: 30px;
   }
 
-  h1 {
-    margin-bottom: 40px;
-  }
+  h1 { margin-bottom: 40px; }
 
   .row {
     background: #111;
@@ -91,24 +89,18 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
+// 🔥 TWÓJ CONFIG + DODANY databaseURL
 const firebaseConfig = {
   apiKey: "AIzaSyDeMPA1eEfGgPqm3eXWPGrZsdJQg5ZQgK0",
   authDomain: "timer2137.firebaseapp.com",
+  databaseURL: "https://timer2137-default-rtdb.firebaseio.com/",
   projectId: "timer2137",
   storageBucket: "timer2137.firebasestorage.app",
   messagingSenderId: "507828793756",
   appId: "1:507828793756:web:e0165f33811a74da181859"
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-  
+const appFirebase = initializeApp(firebaseConfig);
 const db = getDatabase(appFirebase);
 
 const sound = new Audio("https://www.soundjay.com/buttons/sounds/beep-07.mp3");
@@ -152,7 +144,6 @@ for (let i = 0; i < 3; i++) {
     resetBtn.className = "reset-btn";
     resetBtn.innerText = "RESET";
 
-    // 🔥 START TIMER
     btn.onclick = () => {
       let minutes = parseFloat(input.value);
       if (!minutes) return;
@@ -164,14 +155,12 @@ for (let i = 0; i < 3; i++) {
       });
     };
 
-    // 🔥 RESET
     resetBtn.onclick = () => {
       set(ref(db, 'timers/' + id), null);
     };
 
     let interval = null;
 
-    // 🔥 LIVE SYNC
     onValue(ref(db, 'timers/' + id), (snapshot) => {
       const data = snapshot.val();
 
