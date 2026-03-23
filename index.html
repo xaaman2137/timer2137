@@ -23,7 +23,6 @@ h1 {
   font-weight: 600;
 }
 
-/* TOGGLE BUTTON */
 #toggleBtn {
   margin-bottom: 20px;
   padding: 8px 16px;
@@ -35,7 +34,6 @@ h1 {
   font-weight: 600;
 }
 
-/* PANEL */
 .row {
   position: relative;
   background: linear-gradient(145deg, rgba(25,25,25,0.7), rgba(10,10,10,0.7));
@@ -57,7 +55,6 @@ h1 {
   pointer-events: none;
 }
 
-/* INPUT */
 input {
   background: rgba(0,0,0,0.8);
   border: 1px solid #2a2a2a;
@@ -70,27 +67,18 @@ input {
   font-size: 14px;
 }
 
-input:focus {
-  outline: none;
-  border-color: #888;
-  box-shadow: 0 0 12px rgba(255,255,255,0.15);
-}
-
-/* GRID */
 .channels {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 14px;
 }
 
-/* CHANNEL */
 .channel-box {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-/* LABEL */
 .label {
   font-size: 11px;
   font-weight: 600;
@@ -102,7 +90,6 @@ input:focus {
   letter-spacing: 1px;
 }
 
-/* BUTTON */
 button {
   width: 100%;
   border: none;
@@ -120,15 +107,6 @@ button {
   color: white;
 }
 
-.main-btn:hover {
-  transform: translateY(-2px);
-  filter: brightness(1.1);
-}
-
-.main-btn:active {
-  transform: scale(0.96);
-}
-
 .reset-btn {
   margin-top: 6px;
   height: 28px;
@@ -137,17 +115,9 @@ button {
   color: #aaa;
 }
 
-/* STATES */
-.empty {
-  background: #1a1a1a;
-  color: #555;
-}
+.empty { background: #1a1a1a; color: #555; }
+.cooldown { background: linear-gradient(145deg, #4a0000, #8b0000); }
 
-.cooldown {
-  background: linear-gradient(145deg, #4a0000, #8b0000);
-}
-
-/* ALERT */
 @keyframes pulse {
   0% { box-shadow: 0 0 8px #ff9900; }
   50% { box-shadow: 0 0 26px #ffcc00; }
@@ -160,18 +130,12 @@ button {
   animation: pulse 1s infinite;
 }
 
-/* READY */
 .ready {
   background: linear-gradient(145deg, #1e5a1e, #3bd43b);
-  color: #eaffea;
-  box-shadow: 0 0 15px rgba(0,255,0,0.25);
 }
 
-/* UP */
 .up {
   background: linear-gradient(145deg, #0044cc, #3399ff);
-  color: white;
-  box-shadow: 0 0 18px rgba(0,150,255,0.4);
 }
 </style>
 </head>
@@ -179,28 +143,10 @@ button {
 <body>
 
 <h1>RESP CONTROL</h1>
-
 <button id="toggleBtn">Ukryj dół</button>
-
 <div id="app"></div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyDeMPA1eEfGgPqm3eXWPGrZsdJQg5ZQgK0",
-  authDomain: "timer2137.firebaseapp.com",
-  databaseURL: "https://timer2137-default-rtdb.firebaseio.com/",
-  projectId: "timer2137",
-  storageBucket: "timer2137.firebasestorage.app",
-  messagingSenderId: "507828793756",
-  appId: "1:507828793756:web:e0165f33811a74da181859"
-};
-
-const appFirebase = initializeApp(firebaseConfig);
-const db = getDatabase(appFirebase);
-
+<script>
 const sound = new Audio("https://www.soundjay.com/buttons/sounds/beep-07.mp3");
 
 const timers = {};
@@ -250,28 +196,14 @@ for (let i = 0; i < 3; i++) {
       if (!minutes) return;
 
       const end = Date.now() + minutes * 60 * 1000;
-
       timers[id] = end;
       delete finishedAt[id];
-
-      set(ref(db, 'timers/' + id), { end });
     };
 
     resetBtn.onclick = () => {
       delete timers[id];
       delete finishedAt[id];
-      set(ref(db, 'timers/' + id), null);
     };
-
-    onValue(ref(db, 'timers/' + id), (snap) => {
-      const data = snap.val();
-      if (!data) {
-        delete timers[id];
-        delete finishedAt[id];
-      } else {
-        timers[id] = data.end;
-      }
-    });
 
     btn.dataset.id = id;
 
@@ -286,7 +218,7 @@ for (let i = 0; i < 3; i++) {
   app.appendChild(row);
 }
 
-/* TOGGLE LOGIC */
+/* TOGGLE */
 let bottomVisible = true;
 const toggleBtn = document.getElementById("toggleBtn");
 
