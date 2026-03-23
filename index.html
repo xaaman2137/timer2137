@@ -3,39 +3,51 @@
 <head>
 <meta charset="UTF-8">
 <title>Resp Timer</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+
 <style>
 body {
   margin: 0;
   padding: 30px;
-  background: radial-gradient(circle at top, #111, #050505);
-  font-family: 'Inter', 'Segoe UI', Arial;
+  background: radial-gradient(circle at top, #0f1115, #050507);
+  font-family: 'Inter', Arial;
   color: white;
   text-align: center;
 }
 
-/* HEADER */
 h1 {
   margin-bottom: 40px;
-  letter-spacing: 3px;
-  color: #e5e5e5;
+  letter-spacing: 4px;
+  color: #e8e8e8;
   font-weight: 600;
 }
 
 /* PANEL */
 .row {
-  backdrop-filter: blur(14px);
-  background: rgba(20,20,20,0.55);
-  border: 1px solid rgba(255,255,255,0.06);
+  position: relative;
+  background: linear-gradient(145deg, rgba(25,25,25,0.7), rgba(10,10,10,0.7));
+  border: 1px solid rgba(255,255,255,0.05);
   padding: 22px;
-  border-radius: 18px;
+  border-radius: 20px;
   margin-bottom: 25px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.9);
+  box-shadow:
+    0 20px 60px rgba(0,0,0,0.9),
+    inset 0 1px 0 rgba(255,255,255,0.03);
+}
+
+.row::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  background: radial-gradient(circle at top, rgba(255,255,255,0.05), transparent);
+  pointer-events: none;
 }
 
 /* INPUT */
 input {
-  background: rgba(0,0,0,0.7);
+  background: rgba(0,0,0,0.8);
   border: 1px solid #2a2a2a;
   color: white;
   padding: 10px;
@@ -44,33 +56,37 @@ input {
   border-radius: 8px;
   margin-bottom: 15px;
   font-size: 14px;
-  transition: 0.2s;
 }
 
 input:focus {
   outline: none;
-  border-color: #666;
-  box-shadow: 0 0 10px rgba(255,255,255,0.1);
+  border-color: #888;
+  box-shadow: 0 0 12px rgba(255,255,255,0.15);
 }
 
 /* GRID */
 .channels {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 12px;
+  gap: 14px;
 }
 
+/* CHANNEL */
 .channel-box {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-/* LABEL */
+/* 🔥 NOWE CH LABEL */
 .label {
   font-size: 11px;
-  color: #666;
+  font-weight: 600;
+  color: #bbb;
   margin-bottom: 6px;
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.06);
   letter-spacing: 1px;
 }
 
@@ -78,23 +94,23 @@ input:focus {
 button {
   width: 100%;
   border: none;
-  border-radius: 14px;
+  border-radius: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: 0.15s;
+  transition: all 0.15s ease;
 }
 
 .main-btn {
-  height: 70px;
-  font-size: 22px; /* 🔥 bigger numbers */
-  font-family: 'JetBrains Mono', monospace; /* 🔥 coder vibe */
-  letter-spacing: 1px;
+  height: 72px;
+  font-size: 26px;
+  font-family: 'JetBrains Mono', monospace;
   background: #1a1a1a;
   color: white;
 }
 
 .main-btn:hover {
   transform: translateY(-2px);
+  filter: brightness(1.1);
 }
 
 .main-btn:active {
@@ -105,7 +121,7 @@ button {
   margin-top: 6px;
   height: 28px;
   font-size: 10px;
-  background: #400000;
+  background: #3a0000;
   color: #aaa;
 }
 
@@ -116,14 +132,14 @@ button {
 }
 
 .cooldown {
-  background: linear-gradient(145deg, #5a0000, #8b0000);
+  background: linear-gradient(145deg, #4a0000, #8b0000);
 }
 
-/* 🔥 ALERT */
+/* ALERT */
 @keyframes pulse {
-  0% { box-shadow: 0 0 6px #ff9900; }
-  50% { box-shadow: 0 0 22px #ffcc00; }
-  100% { box-shadow: 0 0 6px #ff9900; }
+  0% { box-shadow: 0 0 8px #ff9900; }
+  50% { box-shadow: 0 0 26px #ffcc00; }
+  100% { box-shadow: 0 0 8px #ff9900; }
 }
 
 .alert {
@@ -132,18 +148,19 @@ button {
   animation: pulse 1s infinite;
 }
 
-/* 🟢 SOFT GREEN (bardziej premium) */
+/* READY */
 .ready {
-  background: linear-gradient(145deg, #1f5f1f, #2faa2f);
-  color: #eaffea; /* 🔥 czytelniejsze */
-  box-shadow: 0 0 12px rgba(0,255,0,0.25);
+  background: linear-gradient(145deg, #1e5a1e, #3bd43b);
+  color: #eaffea;
+  box-shadow: 0 0 15px rgba(0,255,0,0.25);
 }
 
-/* subtle hover highlight */
-.main-btn:hover.ready {
-  box-shadow: 0 0 20px rgba(0,255,0,0.5);
+/* 🔵 UP */
+.up {
+  background: linear-gradient(145deg, #0044cc, #3399ff);
+  color: white;
+  box-shadow: 0 0 18px rgba(0,150,255,0.4);
 }
-
 </style>
 </head>
 
@@ -290,8 +307,13 @@ setInterval(() => {
 
     const elapsed = Math.floor((now - finishedAt[id]) / 1000);
 
-    btn.innerText = "+" + format(elapsed);
-    btn.className = "main-btn ready";
+    if (elapsed >= 300) {
+      btn.innerText = "UP";
+      btn.className = "main-btn up";
+    } else {
+      btn.innerText = "+" + format(elapsed);
+      btn.className = "main-btn ready";
+    }
 
   });
 
