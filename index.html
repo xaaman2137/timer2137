@@ -2,238 +2,323 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<title>Resp Timer Elite</title>
+<title>Resp Timer</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 
 <style>
 body {
   margin: 0;
-  padding: 25px;
+  padding: 30px;
   background: radial-gradient(circle at top, #0f1115, #050507);
-  font-family: 'Inter';
-  color: white;
-}
-
-#topbar {
-  position: sticky;
-  top: 0;
-  padding: 14px;
-  margin-bottom: 20px;
-  border-radius: 16px;
-  font-family: 'JetBrains Mono';
-  font-size: 14px;
-  background: linear-gradient(145deg, #1a1a1a, #0a0a0a);
-  box-shadow: 0 10px 40px rgba(0,0,0,0.8);
-  letter-spacing: 1px;
-}
-
-.row {
-  background: linear-gradient(145deg, rgba(25,25,25,0.8), rgba(10,10,10,0.8));
-  padding: 18px;
-  border-radius: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.9);
-}
-
-.channels {
-  display: grid;
-  grid-template-columns: repeat(5,1fr);
-  gap: 12px;
-}
-
-button {
-  border: none;
-  border-radius: 18px;
-  padding: 16px;
-  font-family: 'JetBrains Mono';
-  font-size: 20px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-button:hover {
-  transform: scale(1.05);
-}
-
-.empty { background:#1a1a1a;color:#555; }
-
-.cooldown {
-  background: linear-gradient(145deg,#4a0000,#8b0000);
-}
-
-.alert {
-  background: linear-gradient(45deg,#ffcc00,#ff6600);
-  color:#111;
-  animation: pulse 1s infinite;
-}
-
-.ready {
-  background: linear-gradient(145deg,#1e5a1e,#3bd43b);
-  animation: glow 1.2s infinite;
-}
-
-.up {
-  background: linear-gradient(145deg,#0044cc,#3399ff);
-}
-
-.wave-item {
-  margin-right:6px;
-  padding:4px 8px;
-  border-radius:8px;
-  font-size:12px;
-}
-
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.08); }
-  100% { transform: scale(1); }
-}
-
-@keyframes glow {
-  0% { box-shadow: 0 0 5px #3bd43b; }
-  50% { box-shadow: 0 0 20px #3bd43b; }
-  100% { box-shadow: 0 0 5px #3bd43b; }
-}
-
-input {
-  width: 100%;
-  margin-bottom: 12px;
-  padding: 10px;
-  border-radius: 10px;
-  border: none;
-  background: #0a0a0a;
+  font-family: 'Inter', Arial;
   color: white;
   text-align: center;
 }
 
+h1 {
+  margin-bottom: 40px;
+  letter-spacing: 4px;
+  color: #e8e8e8;
+  font-weight: 600;
+}
+
+/* PANEL */
+.row {
+  position: relative;
+  background: linear-gradient(145deg, rgba(25,25,25,0.7), rgba(10,10,10,0.7));
+  border: 1px solid rgba(255,255,255,0.05);
+  padding: 22px;
+  border-radius: 20px;
+  margin-bottom: 25px;
+  box-shadow:
+    0 20px 60px rgba(0,0,0,0.9),
+    inset 0 1px 0 rgba(255,255,255,0.03);
+}
+
+.row::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  background: radial-gradient(circle at top, rgba(255,255,255,0.05), transparent);
+  pointer-events: none;
+}
+
+/* INPUT */
+input {
+  background: rgba(0,0,0,0.8);
+  border: 1px solid #2a2a2a;
+  color: white;
+  padding: 10px;
+  width: 160px;
+  text-align: center;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+input:focus {
+  outline: none;
+  border-color: #888;
+  box-shadow: 0 0 12px rgba(255,255,255,0.15);
+}
+
+/* GRID */
+.channels {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+}
+
+/* CHANNEL */
+.channel-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 🔥 NOWE CH LABEL */
+.label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #bbb;
+  margin-bottom: 6px;
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.06);
+  letter-spacing: 1px;
+}
+
+/* BUTTON */
+button {
+  width: 100%;
+  border: none;
+  border-radius: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.main-btn {
+  height: 72px;
+  font-size: 26px;
+  font-family: 'JetBrains Mono', monospace;
+  background: #1a1a1a;
+  color: white;
+}
+
+.main-btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+}
+
+.main-btn:active {
+  transform: scale(0.96);
+}
+
+.reset-btn {
+  margin-top: 6px;
+  height: 28px;
+  font-size: 10px;
+  background: #3a0000;
+  color: #aaa;
+}
+
+/* STATES */
+.empty {
+  background: #1a1a1a;
+  color: #555;
+}
+
+.cooldown {
+  background: linear-gradient(145deg, #4a0000, #8b0000);
+}
+
+/* ALERT */
+@keyframes pulse {
+  0% { box-shadow: 0 0 8px #ff9900; }
+  50% { box-shadow: 0 0 26px #ffcc00; }
+  100% { box-shadow: 0 0 8px #ff9900; }
+}
+
+.alert {
+  background: linear-gradient(45deg, #ffcc00, #ff6600);
+  color: #111;
+  animation: pulse 1s infinite;
+}
+
+/* READY */
+.ready {
+  background: linear-gradient(145deg, #1e5a1e, #3bd43b);
+  color: #eaffea;
+  box-shadow: 0 0 15px rgba(0,255,0,0.25);
+}
+
+/* 🔵 UP */
+.up {
+  background: linear-gradient(145deg, #0044cc, #3399ff);
+  color: white;
+  box-shadow: 0 0 18px rgba(0,150,255,0.4);
+}
 </style>
 </head>
 
 <body>
 
-<div id="topbar">SYSTEM READY</div>
+<h1>RESP CONTROL</h1>
 <div id="app"></div>
 
-<script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDeMPA1eEfGgPqm3eXWPGrZsdJQg5ZQgK0",
+  authDomain: "timer2137.firebaseapp.com",
+  databaseURL: "https://timer2137-default-rtdb.firebaseio.com/",
+  projectId: "timer2137",
+  storageBucket: "timer2137.firebasestorage.app",
+  messagingSenderId: "507828793756",
+  appId: "1:507828793756:web:e0165f33811a74da181859"
+};
+
+const appFirebase = initializeApp(firebaseConfig);
+const db = getDatabase(appFirebase);
+
+const sound = new Audio("https://www.soundjay.com/buttons/sounds/beep-07.mp3");
+
 const timers = {};
 const finishedAt = {};
 
-function format(sec){
-  const m=Math.floor(sec/60);
-  const s=sec%60;
+function format(sec) {
+  let m = Math.floor(sec / 60);
+  let s = sec % 60;
   return `${m}:${s.toString().padStart(2,'0')}`;
 }
 
-function getState(r){
-  if(r<=0) return "ready";
-  if(r<=180) return "alert";
-  return "cooldown";
-}
+const app = document.getElementById("app");
 
-function updateTopBar(){
-  const entries = Object.entries(timers)
-    .map(([id,end])=>({id, r:Math.floor((end-Date.now())/1000)}))
-    .filter(e=>e.r>0)
-    .sort((a,b)=>a.r-b.r);
+for (let i = 0; i < 3; i++) {
 
-  const top = document.getElementById("topbar");
+  const row = document.createElement("div");
+  row.className = "row";
 
-  if(entries.length===0){
-    top.innerText="NO TARGETS LOCKED";
-    return;
-  }
+  const input = document.createElement("input");
+  input.placeholder = "czas (minuty)";
+  input.type = "number";
 
-  const active = entries.length;
-  const next = entries[0];
+  const channels = document.createElement("div");
+  channels.className = "channels";
 
-  if(active >= 9 && next.r > 300){
-    top.innerText = `PRZERWA • ${Math.floor(next.r/60)}min`;
-    return;
-  }
+  for (let j = 0; j < 5; j++) {
 
-  const wave = entries.filter(e=>Math.abs(e.r - next.r) <= 10);
+    const id = `row${i}_ch${j}`;
 
-  if(wave.length > 1){
-    top.innerHTML = "WAVE: " + wave.map(e=>{
-      const ch=e.id.split("_ch")[1];
-      return `<span class="wave-item ${getState(e.r)}">CH${ch} ${format(e.r)}</span>`;
-    }).join("");
-    return;
-  }
+    const box = document.createElement("div");
+    box.className = "channel-box";
 
-  top.innerText = `NEXT CH${next.id.split("_ch")[1]} • ${format(next.r)}`;
-}
+    const label = document.createElement("div");
+    label.className = "label";
+    label.innerText = "CH " + (j+1);
 
-const app=document.getElementById("app");
+    const btn = document.createElement("button");
+    btn.className = "main-btn empty";
+    btn.innerText = "EMPTY";
 
-for(let i=0;i<3;i++){
-  const row=document.createElement("div");
-  row.className="row";
+    const resetBtn = document.createElement("button");
+    resetBtn.className = "reset-btn";
+    resetBtn.innerText = "RESET";
 
-  const input=document.createElement("input");
-  input.placeholder="czas (min)";
+    btn.onclick = () => {
+      let minutes = parseFloat(input.value);
+      if (!minutes) return;
 
-  const channels=document.createElement("div");
-  channels.className="channels";
+      const end = Date.now() + minutes * 60 * 1000;
 
-  for(let j=0;j<5;j++){
-    const id=`row${i}_ch${j}`;
-
-    const btn=document.createElement("button");
-    btn.className="empty";
-    btn.innerText="--";
-
-    btn.onclick=()=>{
-      let m=parseFloat(input.value);
-      if(isNaN(m)||m<=0||m>180)return;
-      timers[id]=Date.now()+m*60000;
+      timers[id] = end;
       delete finishedAt[id];
+
+      set(ref(db, 'timers/' + id), { end });
     };
 
-    channels.appendChild(btn);
-    btn.dataset.id=id;
+    resetBtn.onclick = () => {
+      delete timers[id];
+      delete finishedAt[id];
+      set(ref(db, 'timers/' + id), null);
+    };
+
+    onValue(ref(db, 'timers/' + id), (snap) => {
+      const data = snap.val();
+      if (!data) {
+        delete timers[id];
+        delete finishedAt[id];
+      } else {
+        timers[id] = data.end;
+      }
+    });
+
+    btn.dataset.id = id;
+
+    box.appendChild(label);
+    box.appendChild(btn);
+    box.appendChild(resetBtn);
+    channels.appendChild(box);
   }
 
-  row.append(input,channels);
+  row.appendChild(input);
+  row.appendChild(channels);
   app.appendChild(row);
 }
 
-setInterval(()=>{
-  document.querySelectorAll("button").forEach(btn=>{
-    const id=btn.dataset.id;
-    const end=timers[id];
+setInterval(() => {
 
-    if(!end){
-      btn.className="empty";
-      btn.innerText="--";
+  document.querySelectorAll(".main-btn").forEach(btn => {
+
+    const id = btn.dataset.id;
+    const end = timers[id];
+
+    if (!end) {
+      btn.innerText = "EMPTY";
+      btn.className = "main-btn empty";
       return;
     }
 
-    const now=Date.now();
-    const r=Math.floor((end-now)/1000);
+    const now = Date.now();
+    const remaining = Math.floor((end - now) / 1000);
 
-    if(r>0){
-      btn.className=getState(r);
-      btn.innerText=format(r);
+    if (remaining > 0) {
+
+      if (remaining <= 180) {
+        btn.className = "main-btn alert";
+      } else {
+        btn.className = "main-btn cooldown";
+      }
+
+      btn.innerText = format(remaining);
       return;
     }
 
-    if(!finishedAt[id]) finishedAt[id]=now;
+    if (!finishedAt[id]) {
+      finishedAt[id] = now;
+      sound.currentTime = 0;
+      sound.play();
+    }
 
-    const e=Math.floor((now-finishedAt[id])/1000);
+    const elapsed = Math.floor((now - finishedAt[id]) / 1000);
 
-    if(e>=300){
-      btn.className="up";
-      btn.innerText="UP";
+    if (elapsed >= 300) {
+      btn.innerText = "UP";
+      btn.className = "main-btn up";
     } else {
-      btn.className="ready";
-      btn.innerText="+"+format(e);
+      btn.innerText = "+" + format(elapsed);
+      btn.className = "main-btn ready";
     }
+
   });
 
-  updateTopBar();
-},500);
+}, 200);
+
 </script>
 
 </body>
