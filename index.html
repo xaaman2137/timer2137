@@ -3,36 +3,40 @@
 <head>
 <meta charset="UTF-8">
 <title>Resp Timer</title>
-
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
 body {
   margin: 0;
   padding: 30px;
   background: radial-gradient(circle at top, #111, #050505);
-  font-family: 'Segoe UI', Arial;
+  font-family: 'Inter', 'Segoe UI', Arial;
   color: white;
   text-align: center;
 }
 
+/* HEADER */
 h1 {
   margin-bottom: 40px;
   letter-spacing: 3px;
-  color: #ddd;
+  color: #e5e5e5;
+  font-weight: 600;
 }
 
+/* PANEL */
 .row {
-  backdrop-filter: blur(10px);
-  background: rgba(20,20,20,0.6);
-  border: 1px solid rgba(255,255,255,0.05);
-  padding: 20px;
-  border-radius: 16px;
+  backdrop-filter: blur(14px);
+  background: rgba(20,20,20,0.55);
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 22px;
+  border-radius: 18px;
   margin-bottom: 25px;
-  box-shadow: 0 0 30px rgba(0,0,0,0.8);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.9);
 }
 
+/* INPUT */
 input {
   background: rgba(0,0,0,0.7);
-  border: 1px solid #333;
+  border: 1px solid #2a2a2a;
   color: white;
   padding: 10px;
   width: 160px;
@@ -40,8 +44,16 @@ input {
   border-radius: 8px;
   margin-bottom: 15px;
   font-size: 14px;
+  transition: 0.2s;
 }
 
+input:focus {
+  outline: none;
+  border-color: #666;
+  box-shadow: 0 0 10px rgba(255,255,255,0.1);
+}
+
+/* GRID */
 .channels {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -54,24 +66,29 @@ input {
   align-items: center;
 }
 
+/* LABEL */
 .label {
   font-size: 11px;
-  color: #777;
+  color: #666;
   margin-bottom: 6px;
+  letter-spacing: 1px;
 }
 
+/* BUTTON */
 button {
   width: 100%;
   border: none;
-  border-radius: 12px;
-  font-weight: bold;
+  border-radius: 14px;
+  font-weight: 600;
   cursor: pointer;
   transition: 0.15s;
 }
 
 .main-btn {
-  height: 65px;
-  font-size: 16px;
+  height: 70px;
+  font-size: 22px; /* 🔥 bigger numbers */
+  font-family: 'JetBrains Mono', monospace; /* 🔥 coder vibe */
+  letter-spacing: 1px;
   background: #1a1a1a;
   color: white;
 }
@@ -81,7 +98,7 @@ button {
 }
 
 .main-btn:active {
-  transform: scale(0.95);
+  transform: scale(0.96);
 }
 
 .reset-btn {
@@ -89,36 +106,42 @@ button {
   height: 28px;
   font-size: 10px;
   background: #400000;
-  color: #bbb;
+  color: #aaa;
 }
 
 /* STATES */
 .empty {
   background: #1a1a1a;
-  color: #666;
+  color: #555;
 }
 
 .cooldown {
   background: linear-gradient(145deg, #5a0000, #8b0000);
 }
 
-/* 🔥 pulsujący alert */
+/* 🔥 ALERT */
 @keyframes pulse {
-  0% { box-shadow: 0 0 5px #ff9900; }
-  50% { box-shadow: 0 0 20px #ffcc00; }
-  100% { box-shadow: 0 0 5px #ff9900; }
+  0% { box-shadow: 0 0 6px #ff9900; }
+  50% { box-shadow: 0 0 22px #ffcc00; }
+  100% { box-shadow: 0 0 6px #ff9900; }
 }
 
 .alert {
   background: linear-gradient(45deg, #ffcc00, #ff6600);
-  color: black;
+  color: #111;
   animation: pulse 1s infinite;
 }
 
-/* 🟢 glow STOI */
+/* 🟢 SOFT GREEN (bardziej premium) */
 .ready {
-  background: linear-gradient(145deg, #0f7a0f, #1aff1a);
-  box-shadow: 0 0 15px rgba(0,255,0,0.5);
+  background: linear-gradient(145deg, #1f5f1f, #2faa2f);
+  color: #eaffea; /* 🔥 czytelniejsze */
+  box-shadow: 0 0 12px rgba(0,255,0,0.25);
+}
+
+/* subtle hover highlight */
+.main-btn:hover.ready {
+  box-shadow: 0 0 20px rgba(0,255,0,0.5);
 }
 
 </style>
