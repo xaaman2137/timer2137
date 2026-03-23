@@ -17,10 +17,22 @@ body {
 }
 
 h1 {
-  margin-bottom: 40px;
-  letter-spacing: 4px;
-  color: #e8e8e8;
+  margin-bottom: 20px;
+  letter-spacing: 2px;
+  color: #f0f0f0;
   font-weight: 600;
+  font-size: 20px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+#toggleRow {
+  margin-bottom: 20px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: none;
+  background: #222;
+  color: #aaa;
+  cursor: pointer;
 }
 
 /* PANEL */
@@ -36,15 +48,6 @@ h1 {
     inset 0 1px 0 rgba(255,255,255,0.03);
 }
 
-.row::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 20px;
-  background: radial-gradient(circle at top, rgba(255,255,255,0.05), transparent);
-  pointer-events: none;
-}
-
 /* INPUT */
 input {
   background: rgba(0,0,0,0.8);
@@ -55,13 +58,6 @@ input {
   text-align: center;
   border-radius: 8px;
   margin-bottom: 15px;
-  font-size: 14px;
-}
-
-input:focus {
-  outline: none;
-  border-color: #888;
-  box-shadow: 0 0 12px rgba(255,255,255,0.15);
 }
 
 /* GRID */
@@ -71,14 +67,13 @@ input:focus {
   gap: 14px;
 }
 
-/* CHANNEL */
 .channel-box {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-/* 🔥 NOWE CH LABEL */
+/* LABEL */
 .label {
   font-size: 11px;
   font-weight: 600;
@@ -87,7 +82,6 @@ input:focus {
   padding: 4px 10px;
   border-radius: 8px;
   background: rgba(255,255,255,0.06);
-  letter-spacing: 1px;
 }
 
 /* BUTTON */
@@ -97,7 +91,6 @@ button {
   border-radius: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.15s ease;
 }
 
 .main-btn {
@@ -106,15 +99,6 @@ button {
   font-family: 'JetBrains Mono', monospace;
   background: #1a1a1a;
   color: white;
-}
-
-.main-btn:hover {
-  transform: translateY(-2px);
-  filter: brightness(1.1);
-}
-
-.main-btn:active {
-  transform: scale(0.96);
 }
 
 .reset-btn {
@@ -126,47 +110,44 @@ button {
 }
 
 /* STATES */
-.empty {
-  background: #1a1a1a;
-  color: #555;
-}
-
-.cooldown {
-  background: linear-gradient(145deg, #4a0000, #8b0000);
-}
-
-/* ALERT */
-@keyframes pulse {
-  0% { box-shadow: 0 0 8px #ff9900; }
-  50% { box-shadow: 0 0 26px #ffcc00; }
-  100% { box-shadow: 0 0 8px #ff9900; }
-}
+.empty { background:#1a1a1a;color:#555; }
+.cooldown { background:linear-gradient(145deg,#4a0000,#8b0000); }
 
 .alert {
-  background: linear-gradient(45deg, #ffcc00, #ff6600);
-  color: #111;
-  animation: pulse 1s infinite;
+  background: linear-gradient(45deg,#ffcc00,#ff6600);
+  color:#111;
 }
 
-/* READY */
 .ready {
-  background: linear-gradient(145deg, #1e5a1e, #3bd43b);
-  color: #eaffea;
-  box-shadow: 0 0 15px rgba(0,255,0,0.25);
+  background: linear-gradient(145deg,#1e5a1e,#3bd43b);
 }
 
-/* 🔵 UP */
 .up {
-  background: linear-gradient(145deg, #0044cc, #3399ff);
-  color: white;
-  box-shadow: 0 0 18px rgba(0,150,255,0.4);
+  background: linear-gradient(145deg,#0044cc,#3399ff);
 }
+
+/* WAVE ITEMS */
+.wave-item {
+  padding: 4px 8px;
+  border-radius: 8px;
+  margin: 0 4px;
+  font-family: 'JetBrains Mono';
+  font-size: 13px;
+}
+
+.wave-item.cooldown { background:#8b0000; }
+.wave-item.alert { background:#ff9900;color:black; }
+.wave-item.ready { background:#2faa2f; }
+.wave-item.up { background:#3399ff; }
+
 </style>
 </head>
 
 <body>
 
-<h1>RESP CONTROL</h1>
+<h1 id="topbar">LOADING...</h1>
+<button id="toggleRow">TOGGLE LAST ROW</button>
+
 <div id="app"></div>
 
 <script type="module">
@@ -174,13 +155,10 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
 import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDeMPA1eEfGgPqm3eXWPGrZsdJQg5ZQgK0",
+  apiKey: "AIza...",
   authDomain: "timer2137.firebaseapp.com",
   databaseURL: "https://timer2137-default-rtdb.firebaseio.com/",
   projectId: "timer2137",
-  storageBucket: "timer2137.firebasestorage.app",
-  messagingSenderId: "507828793756",
-  appId: "1:507828793756:web:e0165f33811a74da181859"
 };
 
 const appFirebase = initializeApp(firebaseConfig);
@@ -191,133 +169,172 @@ const sound = new Audio("https://www.soundjay.com/buttons/sounds/beep-07.mp3");
 const timers = {};
 const finishedAt = {};
 
-function format(sec) {
-  let m = Math.floor(sec / 60);
-  let s = sec % 60;
+function format(sec){
+  let m=Math.floor(sec/60);
+  let s=sec%60;
   return `${m}:${s.toString().padStart(2,'0')}`;
 }
 
-const app = document.getElementById("app");
+function getStateClass(r){
+  if(r<=0) return "ready";
+  if(r<=180) return "alert";
+  return "cooldown";
+}
 
-for (let i = 0; i < 3; i++) {
+function updateTopBar(){
 
-  const row = document.createElement("div");
-  row.className = "row";
+  const entries=Object.entries(timers)
+  .map(([id,end])=>({
+    id,
+    remaining:Math.floor((end-Date.now())/1000)
+  }))
+  .filter(e=>e.remaining>0)
+  .sort((a,b)=>a.remaining-b.remaining);
 
-  const input = document.createElement("input");
-  input.placeholder = "czas (minuty)";
-  input.type = "number";
+  const top=document.getElementById("topbar");
 
-  const channels = document.createElement("div");
-  channels.className = "channels";
+  if(entries.length===0){
+    top.innerText="NO ACTIVE TIMERS";
+    return;
+  }
 
-  for (let j = 0; j < 5; j++) {
+  const next=entries[0];
+  const wave=entries.filter(e=>Math.abs(e.remaining-next.remaining)<=30);
 
-    const id = `row${i}_ch${j}`;
+  const allLong=entries.every(e=>e.remaining>300);
 
-    const box = document.createElement("div");
-    box.className = "channel-box";
+  if(allLong){
+    top.innerText=`PRZERWA ${Math.floor(next.remaining/60)}min • dobra robota wojowniku`;
+    return;
+  }
 
-    const label = document.createElement("div");
-    label.className = "label";
-    label.innerText = "CH " + (j+1);
+  if(wave.length>1){
+    top.innerHTML="WAVE: "+wave.map(e=>{
+      const ch=e.id.split("_ch")[1];
+      return `<span class="wave-item ${getStateClass(e.remaining)}">CH${ch} ${format(e.remaining)}</span>`;
+    }).join("");
+    return;
+  }
 
-    const btn = document.createElement("button");
-    btn.className = "main-btn empty";
-    btn.innerText = "EMPTY";
+  top.innerText=`NEXT: CH${next.id.split("_ch")[1]} • ${format(next.remaining)}`;
+}
 
-    const resetBtn = document.createElement("button");
-    resetBtn.className = "reset-btn";
-    resetBtn.innerText = "RESET";
+const app=document.getElementById("app");
 
-    btn.onclick = () => {
-      let minutes = parseFloat(input.value);
-      if (!minutes) return;
+for(let i=0;i<3;i++){
 
-      const end = Date.now() + minutes * 60 * 1000;
+  const row=document.createElement("div");
+  row.className="row";
 
-      timers[id] = end;
+  const input=document.createElement("input");
+  input.placeholder="czas (minuty)";
+
+  const channels=document.createElement("div");
+  channels.className="channels";
+
+  for(let j=0;j<5;j++){
+
+    const id=`row${i}_ch${j}`;
+
+    const box=document.createElement("div");
+    box.className="channel-box";
+
+    const label=document.createElement("div");
+    label.className="label";
+    label.innerText="CH "+(j+1);
+
+    const btn=document.createElement("button");
+    btn.className="main-btn empty";
+    btn.innerText="EMPTY";
+
+    const reset=document.createElement("button");
+    reset.className="reset-btn";
+    reset.innerText="RESET";
+
+    btn.onclick=()=>{
+      let m=parseFloat(input.value);
+      if(!m)return;
+      const end=Date.now()+m*60000;
+      timers[id]=end;
       delete finishedAt[id];
-
-      set(ref(db, 'timers/' + id), { end });
+      set(ref(db,'timers/'+id),{end});
     };
 
-    resetBtn.onclick = () => {
+    reset.onclick=()=>{
       delete timers[id];
       delete finishedAt[id];
-      set(ref(db, 'timers/' + id), null);
+      set(ref(db,'timers/'+id),null);
     };
 
-    onValue(ref(db, 'timers/' + id), (snap) => {
-      const data = snap.val();
-      if (!data) {
+    onValue(ref(db,'timers/'+id),(snap)=>{
+      const d=snap.val();
+      if(!d){
         delete timers[id];
         delete finishedAt[id];
-      } else {
-        timers[id] = data.end;
-      }
+      } else timers[id]=d.end;
     });
 
-    btn.dataset.id = id;
+    btn.dataset.id=id;
 
-    box.appendChild(label);
-    box.appendChild(btn);
-    box.appendChild(resetBtn);
+    box.append(label,btn,reset);
     channels.appendChild(box);
   }
 
-  row.appendChild(input);
-  row.appendChild(channels);
+  row.append(input,channels);
   app.appendChild(row);
 }
 
-setInterval(() => {
+/* toggle last row */
+let visible=true;
+document.getElementById("toggleRow").onclick=()=>{
+  const rows=document.querySelectorAll(".row");
+  const last=rows[rows.length-1];
+  visible=!visible;
+  last.style.display=visible?"block":"none";
+};
 
-  document.querySelectorAll(".main-btn").forEach(btn => {
+setInterval(()=>{
 
-    const id = btn.dataset.id;
-    const end = timers[id];
+  document.querySelectorAll(".main-btn").forEach(btn=>{
 
-    if (!end) {
-      btn.innerText = "EMPTY";
-      btn.className = "main-btn empty";
+    const id=btn.dataset.id;
+    const end=timers[id];
+
+    if(!end){
+      btn.innerText="EMPTY";
+      btn.className="main-btn empty";
       return;
     }
 
-    const now = Date.now();
-    const remaining = Math.floor((end - now) / 1000);
+    const now=Date.now();
+    const r=Math.floor((end-now)/1000);
 
-    if (remaining > 0) {
-
-      if (remaining <= 180) {
-        btn.className = "main-btn alert";
-      } else {
-        btn.className = "main-btn cooldown";
-      }
-
-      btn.innerText = format(remaining);
+    if(r>0){
+      btn.className="main-btn "+getStateClass(r);
+      btn.innerText=format(r);
       return;
     }
 
-    if (!finishedAt[id]) {
-      finishedAt[id] = now;
-      sound.currentTime = 0;
+    if(!finishedAt[id]){
+      finishedAt[id]=now;
       sound.play();
     }
 
-    const elapsed = Math.floor((now - finishedAt[id]) / 1000);
+    const elapsed=Math.floor((now-finishedAt[id])/1000);
 
-    if (elapsed >= 300) {
-      btn.innerText = "UP";
-      btn.className = "main-btn up";
+    if(elapsed>=300){
+      btn.innerText="UP";
+      btn.className="main-btn up";
     } else {
-      btn.innerText = "+" + format(elapsed);
-      btn.className = "main-btn ready";
+      btn.innerText="+"+format(elapsed);
+      btn.className="main-btn ready";
     }
 
   });
 
-}, 200);
+  updateTopBar();
+
+},200);
 
 </script>
 
