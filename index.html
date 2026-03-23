@@ -23,6 +23,18 @@ h1 {
   font-weight: 600;
 }
 
+/* TOGGLE BUTTON */
+#toggleBtn {
+  margin-bottom: 20px;
+  padding: 8px 16px;
+  border-radius: 10px;
+  border: none;
+  background: #222;
+  color: #ccc;
+  cursor: pointer;
+  font-weight: 600;
+}
+
 /* PANEL */
 .row {
   position: relative;
@@ -78,7 +90,7 @@ input:focus {
   align-items: center;
 }
 
-/* 🔥 NOWE CH LABEL */
+/* LABEL */
 .label {
   font-size: 11px;
   font-weight: 600;
@@ -155,7 +167,7 @@ button {
   box-shadow: 0 0 15px rgba(0,255,0,0.25);
 }
 
-/* 🔵 UP */
+/* UP */
 .up {
   background: linear-gradient(145deg, #0044cc, #3399ff);
   color: white;
@@ -167,6 +179,9 @@ button {
 <body>
 
 <h1>RESP CONTROL</h1>
+
+<button id="toggleBtn">Ukryj dół</button>
+
 <div id="app"></div>
 
 <script type="module">
@@ -270,6 +285,25 @@ for (let i = 0; i < 3; i++) {
   row.appendChild(channels);
   app.appendChild(row);
 }
+
+/* TOGGLE LOGIC */
+let bottomVisible = true;
+const toggleBtn = document.getElementById("toggleBtn");
+
+toggleBtn.onclick = () => {
+  const rows = document.querySelectorAll(".row");
+  const lastRow = rows[rows.length - 1];
+
+  bottomVisible = !bottomVisible;
+
+  if (bottomVisible) {
+    lastRow.style.display = "block";
+    toggleBtn.innerText = "Ukryj dół";
+  } else {
+    lastRow.style.display = "none";
+    toggleBtn.innerText = "Pokaż dół";
+  }
+};
 
 setInterval(() => {
 
